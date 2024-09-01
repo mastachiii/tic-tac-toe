@@ -5,21 +5,22 @@ main {
 }
 
 img {
-  width: 200px;
-  height: 200px;
+  width: calc(200rem / 16);
+  height: calc(200rem / 16);
 }
+
 .board {
-  width: 610px;
-  background-color: black;
+  width: calc(610rem / 16);
+  background-color: #000000;
   display: grid;
   gap: 5px;
   grid-template-columns: repeat(3, 1fr);
   margin-top: calc(50rem / 16);
 
   & > div {
-    width: 200px;
-    height: 200px;
-    background-color: white;
+    width: calc(200rem / 16);
+    height: calc(200rem / 16);
+    background-color: #FFFFFF;
   }
 }
 

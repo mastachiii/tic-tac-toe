@@ -1,12 +1,8 @@
 const ticTacToe = (function (){
 
     let gameBoard = ['.', '.', '.', '.', '.', '.', '.', '.', '.']
-       , _turns = 0
-       , _ties = 0
-       , _boardState; // To reset the object's turns if either player wins.
+       , _ties = 0;
 
-    const tiesDiv = document.querySelector('.ties');
- 
     function searchArr (arr){
  
      let index = 0;
@@ -36,25 +32,21 @@ const ticTacToe = (function (){
      resetBoard(diag1);
      resetBoard(diag2);
     }
+
+    function updateTies (){
+        
+        _ties++;
+
+        document.querySelector('.ties').textContent = _ties;
+    }
  
     function searchBoard (){
             
      searchArr(ticTacToe.gameBoard);
-  
-     _turns++;
 
-     console.log(_turns);
+     if (!ticTacToe.gameBoard.includes('.')){
 
-     if (_boardState === true){ _turns = 0; _boardState = false; };
-
-     if (_turns === 9){
-
-        console.log('yes');
-        console.log(_ties);
-        _turns = 0;
-
-        tiesDiv.textContent = _ties;
-
+        updateTies();
         resetBoard('TIE');
      }
     }
@@ -79,7 +71,6 @@ const ticTacToe = (function (){
     }
             
     ticTacToe.gameBoard = ['.', '.', '.', '.', '.', '.', '.', '.', '.'];
-    _boardState = true;
 
     setTimeout(function (){
 
@@ -132,36 +123,23 @@ function Player (mark){
                 if (e.target.getAttribute('data-tile') === null){ this.startEvent(); return }; 
 
                 this.markBoard(this, e.target.getAttribute('data-tile'));
-            }
-            , {once: true}) }
+            }, {once: true}) }
             , markBoard = function (obj, index){
 
             const playerChoice = index - 1;
                         
-            if (playerChoice === -1) return;
-
             if ( ticTacToe.gameBoard[playerChoice] === '.'){
                  
                  ticTacToe.gameBoard[playerChoice] = obj.mark;
                  
                  updateBoard(playerChoice);
+             } 
 
-             } else{
- 
-                 alert('Tile is already marked');
- 
-                 markBoard();
-             }
-
-             _turn = false;
-
-             if (obj.mark === 'X') player2.startEvent();
-             if (obj.mark === 'O') player1.startEvent();
+             obj.mark === 'X' ? player2.startEvent() : player1.startEvent();
 
              ticTacToe.searchBoard();
 
              updateScore(obj.mark);
-
             };
 
     return {  mark, incrementScore, getScore, resetScore, changeTurn, markBoard, startEvent };
