@@ -1,25 +1,60 @@
 main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
+img {
+  width: 200px;
+  height: 200px;
+}
+.board {
+  width: 610px;
+  background-color: black;
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: calc(50rem / 16);
+
+  & > div {
+    width: 200px;
+    height: 200px;
+    background-color: white;
+  }
+}
+
+.stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: calc(50rem / 16);
+  width: 100%;
+  font-family: Helvetica, sans-serif;
+  font-size: calc(25rem / 16);
+
+  > div[class^="player"] {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
 
-img{
-
-    width: 200px;
-    height: 200px;
-}
-.board{
-    width: 610px;
-    background-color: black;
-    display: grid;
-    gap: 5px;
-    grid-template-columns: repeat(3, 1fr);
-
-    & > div {
-        width: 200px;
-        height: 200px;
-        background-color: white;
+    > span {
+      display: flex;
+      align-items: center;
+      gap: calc(10rem / 16);
     }
+
+    > p {
+        font-size: calc(50rem / 16);
+    }
+  }
+
+  > div:nth-child(2){
+    display: flex;
+    flex-direction: column;
+    row-gap: calc(90rem / 16);
+  }
+
+  & img {
+    width: calc(15rem / 16);
+    height: calc(15rem / 16);
+  }
 }
