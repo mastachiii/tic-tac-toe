@@ -1,7 +1,8 @@
 const ticTacToe = (function (){
 
     let gameBoard = ['.', '.', '.', '.', '.', '.', '.', '.', '.']
-       , _turns = 0;
+       , _turns = 0
+       , _boardState; // To reset the object's turns if either player wins.
  
     function searchArr (arr){
  
@@ -34,13 +35,13 @@ const ticTacToe = (function (){
     }
  
     function searchBoard (){
- 
-     searchArr(this.gameBoard);
- 
-     console.log(_turns);
- 
+            
+     searchArr(ticTacToe.gameBoard);
+  
      _turns++;
- 
+
+    if (_boardState === true) _turns = 0;
+
      if (_turns === 9){
  
          alert(`IT'S A TIE!`);
@@ -70,43 +71,79 @@ const ticTacToe = (function (){
  
          default:
              return;
-     }
- 
-     _turns = 0;
-     gameBoard = ['.', '.', '.', '.', '.', '.', '.', '.', '.'];
+            }
+            
+    ticTacToe.gameBoard = ['.', '.', '.', '.', '.', '.', '.', '.', '.'];
+    _boardState = true;
+
+    document.querySelectorAll('.board > div > img').forEach((item) => item.remove());
+    
+    const bodyClone = document.querySelector('main').cloneNode(true); // Must remove images first or else the clone would include the logos.
+
+    // https://stackoverflow.com/a/65495646 (So that all event listeners will be removed, and player1.startEvent() will work as intended)
+    document.querySelector('main').remove();
+    document.querySelector('body').append(bodyClone); 
+
+    player1.startEvent(); // Each time that the boards reset, the turns of the players will reset aswell.
     }
  
     return { gameBoard, searchBoard };
  
- })();
+})();
  
- function Player (name, mark){
+function Player (name, mark){
  
-     let _score = 0;
+     let _score = 0
+        , _turn = (mark === 'X') ? true : false;
+
+    const updateDom = function (index){
+
+        const _markImage = document.createElement('img')
+               , _boardDivs = document.querySelectorAll('.board div');
+
+         _markImage.src = mark === 'X' ? './resources/icon/cross.svg' : './resources/icon/circle.svg';
+
+
+        _boardDivs[index].append(_markImage);
+    }
  
      const incrementScore = function (){ _score++; }
             , getScore = function (){ return _score; }
-            , resetScore = function (){ _score = 0;}
-            , markBoard = function (){
- 
-             const playerChoice = (+prompt('Choose which grid to mark.')) - 1;
- 
-             if ( ticTacToe.gameBoard[playerChoice] === '.'){
+            , resetScore = function (){ _score = 0; }
+            , changeTurn = function (){ _turn = _turn === false ? true : _turn }
+            , startEvent = function (){ document.querySelector('main').addEventListener('click', (e) => this.markBoard(this, e.target.getAttribute('data-tile')), {once: true}) }
+            , markBoard = function (obj, index){
+
+            const playerChoice = index - 1;
+                        
+            if (playerChoice === -1) return;
+
+            if ( ticTacToe.gameBoard[playerChoice] === '.'){
                  
-                 ticTacToe.gameBoard[playerChoice] = this.mark;
- 
+                 ticTacToe.gameBoard[playerChoice] = obj.mark;
+                 
+                 updateDom(playerChoice);
+
              } else{
  
                  alert('Tile is already marked');
  
                  markBoard();
              }
+
+             _turn = false;
+
+             if (obj.mark === 'X') player2.startEvent();
+             if (obj.mark === 'O') player1.startEvent();
+
+             ticTacToe.searchBoard();
             };
- 
-     
-     return { name, mark, incrementScore, getScore, resetScore, markBoard };
+
+    return { name, mark, incrementScore, getScore, resetScore, changeTurn, markBoard, startEvent};
  };
  
- const player1 = Player ('Peter', 'X')
-        , player2 = Player ('Clark', '0');
- 
+const player1 = Player ('Peter', 'X')
+        , player2 = Player ('Clark', 'O');
+
+player1.startEvent();
+
